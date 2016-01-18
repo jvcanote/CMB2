@@ -81,8 +81,6 @@ class CMB2 {
 		'new_user_section' => 'add-new-user', // or 'add-existing-user'
 		'new_term_section' => true,
 		'show_in_rest'     => false,
-		'rest_read'        => false,
-		'rest_write'       => false,
 	);
 
 	/**
