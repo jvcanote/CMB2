@@ -344,7 +344,7 @@ class CMB2 {
 		}
 
 		if ( $field_group->args( 'repeatable' ) ) {
-			echo '<div class="cmb-row"><div class="cmb-td"><p class="cmb-add-row"><button data-selector="', $field_group->id(), '_repeat" data-grouptitle="', $field_group->options( 'group_title' ), '" class="cmb-add-group-row button">', $field_group->options( 'add_button' ), '</button></p></div></div>';
+			echo '<div class="cmb-row"><div class="cmb-td"><p class="cmb-add-row"><button type="button" data-selector="', $field_group->id(), '_repeat" data-grouptitle="', $field_group->options( 'group_title' ), '" class="cmb-add-group-row button">', $field_group->options( 'add_button' ), '</button></p></div></div>';
 		}
 
 		echo '</div></div></div>';
@@ -369,7 +369,7 @@ class CMB2 {
 		<div class="postbox cmb-row cmb-repeatable-grouping', $closed_class, '" data-iterator="', $field_group->index, '">';
 
 			if ( $field_group->args( 'repeatable' ) ) {
-				echo '<button ', $remove_disabled, 'data-selector="', $field_group->id(), '_repeat" class="dashicons-before dashicons-no-alt cmb-remove-group-row"></button>';
+				echo '<button type="button" ', $remove_disabled, 'data-selector="', $field_group->id(), '_repeat" class="dashicons-before dashicons-no-alt cmb-remove-group-row"></button>';
 			}
 
 			echo '
@@ -399,7 +399,7 @@ class CMB2 {
 					echo '
 					<div class="cmb-row cmb-remove-field-row">
 						<div class="cmb-remove-row">
-							<button ', $remove_disabled, 'data-selector="', $field_group->id(), '_repeat" class="button cmb-remove-group-row alignright">', $field_group->options( 'remove_button' ), '</button>
+							<button type="button" ', $remove_disabled, 'data-selector="', $field_group->id(), '_repeat" class="button cmb-remove-group-row alignright">', $field_group->options( 'remove_button' ), '</button>
 						</div>
 					</div>
 					';
@@ -976,6 +976,11 @@ class CMB2 {
 			return false;
 		}
 
+		if ( 'oembed' === $field['type'] ) {
+			// Initiate oembed Ajax hooks
+			cmb2_ajax();
+		}
+
 		$this->_add_field_to_array(
 			$field,
 			$this->meta_box['fields'],
@@ -1055,8 +1060,12 @@ class CMB2 {
 			return true;
 		}
 
-		unset( $this->fields[ $field_id ]->args['fields'][ $sub_field_id ] );
-		unset( $this->meta_box['fields'][ $field_id ]['fields'][ $sub_field_id ] );
+		if ( isset( $this->fields[ $field_id ]->args['fields'][ $sub_field_id ] ) ) {
+			unset( $this->fields[ $field_id ]->args['fields'][ $sub_field_id ] );
+		}
+		if ( isset( $this->meta_box['fields'][ $field_id ]['fields'][ $sub_field_id ] ) ) {
+			unset( $this->meta_box['fields'][ $field_id ]['fields'][ $sub_field_id ] );
+		}
 		return true;
 	}
 
