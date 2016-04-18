@@ -595,7 +595,7 @@ class Test_CMB2_Core extends Test_CMB2 {
 		$field = $cmb->get_field( 'group_field2' );
 
 		$expected_group_render = '
-		<div class="cmb-row cmb-repeat-group-wrap cmb-type-group cmb2-id-group-field2"  data-fieldtype="group">
+		<div class="cmb-row cmb-repeat-group-wrap cmb-type-group cmb2-id-group-field2" data-fieldtype="group">
 			<div class="cmb-td">
 				<div id="group_field2_repeat" class="cmb-nested cmb-field-list cmb-repeatable-group non-sortable non-repeatable" style="width:100%;">
 					<div class="cmb-row">
