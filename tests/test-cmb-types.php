@@ -8,123 +8,15 @@
  * @link      http://webdevstudios.com
  */
 
-require_once( 'cmb-tests-base.php' );
+require_once( 'test-cmb-types-base.php' );
 
-class Test_CMB2_Types extends Test_CMB2 {
+class Test_CMB2_Types extends Test_CMB2_Types_Base {
 
 	/**
 	 * Set up the test fixture
 	 */
 	public function setUp() {
 		parent::setUp();
-
-		$this->cmb_id = 'test';
-
-		$this->text_type_field = array(
-			'name' => 'Name',
-			'desc' => 'This is a description',
-			'id'   => 'field_test_field',
-			'type' => 'text',
-		);
-
-		$this->field_test = array(
-			'id' => 'field_test',
-			'fields' => array(
-				$this->text_type_field,
-			),
-		);
-
-		$this->attributes_test = array(
-			'id' => 'attributes_test',
-			'fields' => array(
-				array(
-					'name' => 'Name',
-					'desc' => 'This is a description',
-					'id'   => 'attributes_test_field',
-					'type' => 'text',
-					'attributes' => array(
-						'type'      => 'number',
-						'disabled'  => 'disabled',
-						'id'        => 'arbitrary-id',
-						'data-test' => json_encode( array(
-							'one'   => 'One',
-							'two'   => 'Two',
-							'true'  => true,
-							'false' => false,
-							'array' => array(
-								'nested_data' => true,
-							),
-						) ),
-					),
-				),
-			),
-		);
-
-		$this->options_test = array(
-			'id' => 'options_test',
-			'fields' => array(
-				array(
-					'name' => 'Name',
-					'description' => 'This is a description',
-					'id'   => 'options_test_field',
-					'type' => 'select',
-					'options' => array(
-						'one'   => 'One',
-						'two'   => 'Two',
-						'true'  => true,
-						'false' => false,
-					),
-				),
-			),
-		);
-
-		$this->options_cb_test = array(
-			'id' => 'options_cb_test',
-			'fields' => array(
-				array(
-					'name' => 'Name',
-					'description' => 'This is a description',
-					'id'   => 'options_cb_test_field',
-					'type' => 'select',
-					'options_cb' => array( $this, 'options_cb' ),
-				),
-			),
-		);
-
-		$this->options_cb_and_array_test = array(
-			'id' => 'options_cb_and_array_test',
-			'fields' => array(
-				array(
-					'name' => 'Name',
-					'description' => 'This is a description',
-					'id'   => 'options_cb_and_array_test_field',
-					'type' => 'select',
-					'options' => array(
-						'one'   => 'One',
-						'two'   => 'Two',
-						'true'  => true,
-						'false' => false,
-					),
-					'options_cb' => array( $this, 'options_cb' ),
-				),
-			),
-		);
-
-		$this->post_id = $this->factory->post->create();
-		$this->term = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'test_category' ) );
-		$this->term2 = $this->factory->term->create( array( 'taxonomy' => 'category', 'name' => 'number_2' ) );
-
-		wp_set_object_terms( $this->post_id, 'test_category', 'category' );
-
-		$this->img_name = 'image.jpg';
-		$this->attachment_id = $this->factory->attachment->create_object( $this->img_name, $this->post_id, array(
-			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment'
-		) );
-		$this->attachment_id2 = $this->factory->attachment->create_object( '2nd-'.$this->img_name, $this->post_id, array(
-			'post_mime_type' => 'image/jpeg',
-			'post_type' => 'attachment'
-		) );
 	}
 
 	public function tearDown() {
@@ -141,7 +33,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 		$this->assertInstanceOf( 'CMB2_Field', $field );
 
 		$expected_field = '
-		<div class="cmb-row cmb-type-text cmb2-id-field-test-field cmb-repeat table-layout">
+		<div class="cmb-row cmb-type-text cmb2-id-field-test-field cmb-repeat table-layout" data-fieldtype="text">
 			<div class="cmb-th"><label for="field_test_field">Name</label></div>
 			<div class="cmb-td">
 				<p class="cmb2-metabox-description">This is a description</p>
@@ -152,7 +44,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 								<input type="text" class="regular-text" name="field_test_field[0]" id="field_test_field_0" data-iterator="0" value=""/>
 							</div>
 							<div class="cmb-td cmb-remove-row">
-								<button type="button" class="button cmb-remove-row-button button-disabled">' . __( 'Remove', 'cmb2' ) . '</button>
+								<button type="button" class="button cmb-remove-row-button button-disabled">' . esc_html__( 'Remove', 'cmb2' ) . '</button>
 							</div>
 						</div>
 						<div class="cmb-row empty-row hidden">
@@ -160,7 +52,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 								<input type="text" class="regular-text" name="field_test_field[1]" id="field_test_field_1" data-iterator="1" value=""/>
 							</div>
 							<div class="cmb-td cmb-remove-row">
-								<button type="button" class="button cmb-remove-row-button">' . __( 'Remove', 'cmb2' ) . '</button>
+								<button type="button" class="button cmb-remove-row-button">' . esc_html__( 'Remove', 'cmb2' ) . '</button>
 							</div>
 						</div>
 					</div>
@@ -181,7 +73,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 		$this->assertInstanceOf( 'CMB2_Field', $field );
 
 		$expected_field = '
-		<div class="cmb-row cmb-type-select cmb2-id-options-cb-test-field">
+		<div class="cmb-row cmb-type-select cmb2-id-options-cb-test-field" data-fieldtype="select">
 			<div class="cmb-th"><label for="options_cb_test_field">Name</label></div>
 			<div class="cmb-td">
 				<select class="cmb2_select" name="options_cb_test_field" id="options_cb_test_field">
@@ -207,7 +99,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 		$this->assertInstanceOf( 'CMB2_Field', $field );
 
 		$expected_field = '
-		<div class="cmb-row cmb-type-select cmb2-id-options-test-field">
+		<div class="cmb-row cmb-type-select cmb2-id-options-test-field" data-fieldtype="select">
 			<div class="cmb-th"><label for="options_test_field">Name</label></div>
 			<div class="cmb-td">
 				<select class="cmb2_select" name="options_test_field" id="options_test_field">
@@ -243,7 +135,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 		$this->assertInstanceOf( 'CMB2_Field', $field );
 
 		$expected_field = '
-		<div class="cmb-row cmb-type-text cmb2-id-attributes-test-field table-layout">
+		<div class="cmb-row cmb-type-text cmb2-id-attributes-test-field table-layout" data-fieldtype="text">
 			<div class="cmb-th"><label for="attributes_test_field">Name</label></div>
 			<div class="cmb-td">
 				<input type="number" class="regular-text" name="attributes_test_field" id="arbitrary-id" value="" disabled="disabled" data-test=\'{"one":"One","two":"Two","true":true,"false":false,"array":{"nested_data":true}}\'/>
@@ -269,7 +161,10 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	public function test_is_valid_img_ext() {
 		$type = $this->get_field_type_object( 'file' );
-		$this->assertFalse( $type->is_valid_img_ext( $type->get_file_ext( site_url( '/wp-content/uploads/2014/12/test-file.pdf' ) ) ) );
+		$type->get_new_render_type( $type->field->type(), 'CMB2_Type_File' )->render();
+
+		$ext = $type->get_file_ext( site_url( '/wp-content/uploads/2014/12/test-file.pdf' ) );
+		$this->assertFalse( $type->is_valid_img_ext( $ext ) );
 		$this->assertFalse( $type->is_valid_img_ext( '.pdf' ) );
 		$this->assertFalse( $type->is_valid_img_ext( 'jpg' ) );
 		$this->assertFalse( $type->is_valid_img_ext( '.test' ) );
@@ -277,11 +172,13 @@ class Test_CMB2_Types extends Test_CMB2 {
 		$valid_types = apply_filters( 'cmb2_valid_img_types', array( 'jpg', 'jpeg', 'png', 'gif', 'ico', 'icon' ) );
 
 		foreach ( $valid_types as $ext ) {
-			$this->assertTrue( $type->is_valid_img_ext( '/test.' . $ext ) );
+			$is_valid = $type->is_valid_img_ext( '/test.' . $ext, true );
+			$this->assertEquals( $is_valid, $type->type->is_valid_img_ext( '/test.' . $ext, true ) );
+			$this->assertTrue( $is_valid );
 		}
 
 		// Add .test as a valid image type
-		add_filter( 'cmb2_valid_img_types', array( $this, 'add_type_cb' ) );
+		add_filter( 'cmb2_valid_img_types', array( __CLASS__, 'add_type_cb' ) );
 		$this->assertTrue( $type->is_valid_img_ext( '/test.test' ) );
 	}
 
@@ -306,7 +203,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	public function test_hidden_field() {
 		$this->assertHTMLstringsAreEqual(
-			'<input type="hidden" name="field_test_field" id="field_test_field" value=""/>',
+			'<input type="hidden" class="cmb2-hidden" name="field_test_field" id="field_test_field" value=""/>',
 			$this->capture_render( array( $this->get_field_type_object( 'hidden' ), 'render' ) )
 		);
 	}
@@ -426,7 +323,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 		$type = $this->get_field_type_object( array(
 			'type'         => 'text_money',
-			'before_field' => array( $this, 'change_money_cb' ),
+			'before_field' => array( __CLASS__, 'change_money_cb' ),
 		) );
 
 		$this->assertHTMLstringsAreEqual(
@@ -435,6 +332,22 @@ class Test_CMB2_Types extends Test_CMB2 {
 		);
 
 		$this->assertEquals( '£ text_money', $type->field->get_param_callback_result( 'before_field' ) );
+	}
+
+	public function test_text_money_field_value_update() {
+		$field = $this->get_field_object( 'text_money' );
+		$field->save_field( '8.2' );
+		$this->assertEquals( '8.20', get_post_meta( $this->post_id, $this->text_type_field['id'], 1 ) );
+
+		delete_post_meta( $this->post_id, $this->text_type_field['id'] );
+		$field = $this->get_field_object( 'text_money' );
+		$field->save_field( '0.00' );
+		$this->assertEquals( '0.00', get_post_meta( $this->post_id, $this->text_type_field['id'], 1 ) );
+
+		delete_post_meta( $this->post_id, $this->text_type_field['id'] );
+		$field->save_field( '0' );
+		$this->assertEquals( '', get_post_meta( $this->post_id, $this->text_type_field['id'], 1 ) );
+
 	}
 
 	public function test_textarea_small_field() {
@@ -452,10 +365,9 @@ class Test_CMB2_Types extends Test_CMB2 {
 	}
 
 	public function test_wysiwyg_field() {
-		global $wp_version;
 
 		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		$version = 'ver=' . $wp_version;
+		$version = 'ver=' . get_bloginfo( 'version' );
 
 		$field = $this->get_field_object( array( 'type' => 'wysiwyg', 'options' => array( 'quicktags' => false ) ) );
 		$type = $this->get_field_type_object( $field );
@@ -524,20 +436,17 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 		if ( version_compare( PHP_VERSION, '5.3' ) >= 0 ) {
 
-			$tzstring = cmb2_utils()->timezone_string();
-			$offset = cmb2_utils()->timezone_offset( $tzstring );
-			if ( substr( $tzstring, 0, 3 ) === 'UTC' ) {
-				$tzstring = timezone_name_from_abbr( '', $offset, 0 );
-			}
-			$today_stamp = strtotime( 'today' );
+			// date_default_timezone_set( 'America/New_York' );
+			// $tzstring = CMB2_Utils::timezone_string();
+			$tzstring = 'America/New_York';
+			$test_stamp = strtotime( '2pm April 12 2016' );
 
 			$field = $this->get_field_object( 'text_datetime_timestamp_timezone' );
-			$date_val = $field->format_timestamp( $today_stamp );
-			$time_val = $field->format_timestamp( $today_stamp, 'time_format' );
+			$date_val = $field->format_timestamp( $test_stamp );
+			$time_val = $field->format_timestamp( $test_stamp, 'time_format' );
 
 			$value_to_save = new DateTime( $date_val . ' ' . $time_val, new DateTimeZone( $tzstring ) );
 			$value_to_save = serialize( $value_to_save );
-
 
 			update_post_meta( $this->post_id, $this->text_type_field['id'], $value_to_save );
 
@@ -547,7 +456,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 			$zones = wp_timezone_choice( $tzstring );
 
 			$this->assertHTMLstringsAreEqual(
-				sprintf( '<input type="text" class="cmb2-text-small cmb2-datepicker" name="field_test_field[date]" id="field_test_field_date" value="%s" data-datepicker=\'{"dateFormat":"mm&#39;\/&#39;dd&#39;\/&#39;yy"}\'/><input type="text" class="cmb2-timepicker text-time" name="field_test_field[time]" id="field_test_field_time" value="%s" data-timepicker=\'{"timeFormat":"hh:mm TT"}\'/><select class="cmb2_select cmb2-select-timezone" name="field_test_field[timezone]" id="field_test_field_timezone">%s</select><p class="cmb2-metabox-description">This is a description</p>', $date_val, $time_val, $zones ),
+				sprintf( '<input type="text" class="cmb2-text-small cmb2-datepicker" name="field_test_field[date]" id="field_test_field_date" value="04/12/2016" data-datepicker=\'{"dateFormat":"mm&#39;\/&#39;dd&#39;\/&#39;yy"}\'/><input type="text" class="cmb2-timepicker text-time" name="field_test_field[time]" id="field_test_field_time" value="06:00 PM" data-timepicker=\'{"timeFormat":"hh:mm TT"}\'/><select class="cmb2_select cmb2-select-timezone" name="field_test_field[timezone]" id="field_test_field_timezone">%s</select><p class="cmb2-metabox-description">This is a description</p>', $zones ),
 				$this->capture_render( array( $this->get_field_type_object( 'text_datetime_timestamp_timezone' ), 'render' ) )
 			);
 
@@ -556,7 +465,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 	}
 
 	public function test_select_timezone_field_after_value_update() {
-		$value_to_save = cmb2_utils()->timezone_string();
+		$value_to_save = CMB2_Utils::timezone_string();
 		update_post_meta( $this->post_id, $this->text_type_field['id'], $value_to_save );
 		$zones = wp_timezone_choice( $value_to_save );
 
@@ -584,7 +493,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	public function test_title_field() {
 		$this->assertHTMLstringsAreEqual(
-			'<h5 class="cmb2-metabox-title">Name</h5><p class="cmb2-metabox-description">This is a description</p>',
+			'<h5 class="cmb2-metabox-title" id="field-test-field">Name</h5><p class="cmb2-metabox-description">This is a description</p>',
 			$this->capture_render( array( $this->get_field_type_object( 'title' ), 'render' ) )
 		);
 	}
@@ -680,14 +589,6 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	}
 
-	private function check_box_assertion( $output, $checked = false ) {
-		$checked = $checked ? ' checked="checked"' : '';
-		$this->assertHTMLstringsAreEqual(
-			'<input type="checkbox" class="cmb2-option cmb2-list" name="field_test_field" id="field_test_field" value="on"'. $checked .'/><label for="field_test_field"><span class="cmb2-metabox-description">This is a description</span></label>',
-			is_string( $output ) ? $output : $this->capture_render( $output )
-		);
-	}
-
 	public function test_taxonomy_radio_field() {
 		$args = $this->options_test['fields'][0];
 		$args['type'] = 'taxonomy_radio';
@@ -734,7 +635,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	public function test_file_list_field() {
 		$this->assertHTMLstringsAreEqual(
-			'<input type="hidden" class="cmb2-upload-file cmb2-upload-list" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[120,120]\' data-queryargs=\'\'/><input type="button" class="cmb2-upload-button button cmb2-upload-list" name="" id="" value="' . __( 'Add or Upload Files', 'cmb2' ) . '"/><p class="cmb2-metabox-description">This is a description</p><ul id="field_test_field-status" class="cmb2-media-status cmb-attach-list"></ul>',
+			'<input type="hidden" class="cmb2-upload-file cmb2-upload-list" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[120,120]\' data-sizename=\'thumbnail\' data-queryargs=\'\'/><input type="button" class="cmb2-upload-button button cmb2-upload-list" name="" id="" value="' . esc_attr__( 'Add or Upload Files', 'cmb2' ) . '"/><p class="cmb2-metabox-description">This is a description</p><ul id="field_test_field-status" class="cmb2-media-status cmb-attach-list"></ul>',
 			$this->capture_render( array( $this->get_field_type_object( array( 'type' => 'file_list', 'preview_size' => array( 120, 120 ) ) ), 'render' ) )
 		);
 	}
@@ -757,8 +658,10 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 		$field_type = $this->get_field_type_object( 'file_list' );
 
+		$sizename = CMB2_Utils::wp_at_least( '4.7' ) ? 'twentyseventeen-thumbnail-avatar' : 'thumbnail';
+
 		$this->assertHTMLstringsAreEqual(
-			sprintf( '<input type="hidden" class="cmb2-upload-file cmb2-upload-list" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[50,50]\' data-queryargs=\'\'/><input type="button" class="cmb2-upload-button button cmb2-upload-list" name="" id="" value="' . __( 'Add or Upload Files', 'cmb2' ) . '"/><p class="cmb2-metabox-description">This is a description</p><ul id="field_test_field-status" class="cmb2-media-status cmb-attach-list">%1$s%2$s</ul>',
+			sprintf( '<input type="hidden" class="cmb2-upload-file cmb2-upload-list" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[50,50]\' data-sizename=\''. $sizename .'\' data-queryargs=\'\'/><input type="button" class="cmb2-upload-button button cmb2-upload-list" name="" id="" value="' . esc_attr__( 'Add or Upload Files', 'cmb2' ) . '"/><p class="cmb2-metabox-description">This is a description</p><ul id="field_test_field-status" class="cmb2-media-status cmb-attach-list">%1$s%2$s</ul>',
 				$this->file_sprintf( array(
 					'file_name'     => $field_type->get_file_name_from_path( $attach_1_url ),
 					'attachment_id' => $this->attachment_id,
@@ -776,17 +679,9 @@ class Test_CMB2_Types extends Test_CMB2 {
 		delete_post_meta( $this->post_id, $this->text_type_field['id'] );
 	}
 
-	protected function file_sprintf( $args ) {
-		return sprintf( '<li class="file-status"><span>' . __( 'File:', 'cmb2' ) . ' <strong>%1$s</strong></span>&nbsp;&nbsp; (<a href="%3$s" target="_blank" rel="external">' . __( 'Download','cmb2' ) . '</a> / <a href="#" class="cmb2-remove-file-button">' . __( 'Remove', 'cmb2' ) . '</a>)<input type="hidden" name="field_test_field[%2$d]" id="filelist-%2$d" value="%3$s" data-id=\'%2$d\'/></li>',
-			$args['file_name'],
-			$args['attachment_id'],
-			$args['url']
-		);
-	}
-
 	public function test_file_field() {
 		$this->assertHTMLstringsAreEqual(
-			'<input type="text" class="cmb2-upload-file regular-text" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[199,199]\' data-queryargs=\'\'/><input class="cmb2-upload-button button" type="button" value="' . __( 'Add or Upload File', 'cmb2' ) . '" /><p class="cmb2-metabox-description">This is a description</p><input type="hidden" class="cmb2-upload-file-id" name="field_test_field_id" id="field_test_field_id" value="0"/><div id="field_test_field_id-status" class="cmb2-media-status"></div>',
+			'<input type="text" class="cmb2-upload-file regular-text" name="field_test_field" id="field_test_field" value="" size="45" data-previewsize=\'[199,199]\' data-sizename=\'medium\' data-queryargs=\'\'/><input class="cmb2-upload-button button" type="button" value="' . esc_attr__( 'Add or Upload File', 'cmb2' ) . '" /><p class="cmb2-metabox-description">This is a description</p><input type="hidden" class="cmb2-upload-file-id" name="field_test_field_id" id="field_test_field_id" value=""/><div id="field_test_field_id-status" class="cmb2-media-status"></div>',
 			$this->capture_render( array( $this->get_field_type_object( array( 'type' => 'file', 'preview_size' => array( 199, 199 ) ) ), 'render' ) )
 		);
 	}
@@ -804,7 +699,7 @@ class Test_CMB2_Types extends Test_CMB2 {
  		$file_name = $field_type->get_file_name_from_path( $file_url );
 
 		$this->assertHTMLstringsAreEqual(
-			sprintf( '<input type="text" class="cmb2-upload-file regular-text" name="field_test_field" id="field_test_field" value="%2$s" size="45" data-previewsize=\'[199,199]\' data-queryargs=\'\'/><input class="cmb2-upload-button button" type="button" value="' . __( 'Add or Upload File', 'cmb2' ) . '" /><p class="cmb2-metabox-description">This is a description</p><input type="hidden" class="cmb2-upload-file-id" name="field_test_field_id" id="field_test_field_id" value="%1$d"/><div id="field_test_field_id-status" class="cmb2-media-status"><div class="file-status"><span>' . __( 'File:', 'cmb2' ) . ' <strong>%3$s</strong></span>&nbsp;&nbsp; (<a href="%2$s" target="_blank" rel="external">' . __( 'Download','cmb2' ) . '</a> / <a href="#" class="cmb2-remove-file-button" rel="field_test_field">' . __( 'Remove', 'cmb2' ) . '</a>)</div></div>',
+			sprintf( '<input type="text" class="cmb2-upload-file regular-text" name="field_test_field" id="field_test_field" value="%2$s" size="45" data-previewsize=\'[199,199]\' data-sizename=\'medium\' data-queryargs=\'\'/><input class="cmb2-upload-button button" type="button" value="' . esc_attr__( 'Add or Upload File', 'cmb2' ) . '" /><p class="cmb2-metabox-description">This is a description</p><input type="hidden" class="cmb2-upload-file-id" name="field_test_field_id" id="field_test_field_id" value="%1$d"/><div id="field_test_field_id-status" class="cmb2-media-status"><div class="file-status cmb2-media-item"><span>' . esc_html__( 'File:', 'cmb2' ) . ' <strong>%3$s</strong></span>&nbsp;&nbsp; (<a href="%2$s" target="_blank" rel="external">' . esc_html__( 'Download','cmb2' ) . '</a> / <a href="#" class="cmb2-remove-file-button" rel="field_test_field">' . esc_html__( 'Remove', 'cmb2' ) . '</a>)</div></div>',
 				$this->attachment_id,
 				$file_url,
 				$file_name
@@ -818,23 +713,26 @@ class Test_CMB2_Types extends Test_CMB2 {
 
 	public function test_oembed_field() {
 		$this->assertHTMLstringsAreEqual(
-			sprintf( '<input type="text" class="cmb2-oembed regular-text" name="field_test_field" id="field_test_field" value="" data-objectid=\'%1$d\' data-objecttype=\'post\'/><p class="cmb2-metabox-description">This is a description</p><p class="cmb-spinner spinner" style="display:none;"></p><div id="field_test_field-status" class="cmb2-media-status ui-helper-clearfix embed_wrap"></div>', $this->post_id ),
+			sprintf( '<input type="text" class="cmb2-oembed regular-text" name="field_test_field" id="field_test_field" value="" data-objectid=\'%1$d\' data-objecttype=\'post\'/><p class="cmb2-metabox-description">This is a description</p><p class="cmb-spinner spinner"></p><div id="field_test_field-status" class="cmb2-media-status ui-helper-clearfix embed_wrap"></div>', $this->post_id ),
 			$this->capture_render( array( $this->get_field_type_object( 'oembed' ), 'render' ) )
 		);
 	}
 
+	/**
+	 * @group cmb2-ajax-embed
+	 */
 	public function test_oembed_field_after_value_update() {
 		$vid = 'EOfy5LDpEHo';
 		$value = 'https://www.youtube.com/watch?v=' . $vid;
  		update_post_meta( $this->post_id, $this->text_type_field['id'], $value );
 
- 		$results = $this->expected_oembed_results( array(
+ 		$results = $this->expected_youtube_oembed_results( array(
 			'src'      => 'http://www.youtube.com/embed/' . $vid . '?feature=oembed',
 			'url'      => $value,
 			'field_id' => 'field_test_field',
 		) );
 
- 		$expected_field = sprintf( '<input type="text" class="cmb2-oembed regular-text" name="field_test_field" id="field_test_field" value="%1$s" data-objectid=\'%2$d\' data-objecttype=\'post\'/><p class="cmb2-metabox-description">This is a description</p><p class="cmb-spinner spinner" style="display:none;"></p><div id="field_test_field-status" class="cmb2-media-status ui-helper-clearfix embed_wrap">%3$s</div>', $value, $this->post_id, $results );
+ 		$expected_field = sprintf( '<input type="text" class="cmb2-oembed regular-text" name="field_test_field" id="field_test_field" value="%1$s" data-objectid=\'%2$d\' data-objecttype=\'post\'/><p class="cmb2-metabox-description">This is a description</p><p class="cmb-spinner spinner"></p><div id="field_test_field-status" class="cmb2-media-status ui-helper-clearfix embed_wrap">%3$s</div>', $value, $this->post_id, $results );
 
  		$actual_field = $this->capture_render( array( $this->get_field_type_object( 'oembed' ), 'render' ) );
 
@@ -924,7 +822,7 @@ class Test_CMB2_Types extends Test_CMB2 {
 				}
 
 				$tzstring = $value['timezone'];
-				$offset = cmb2_utils()->timezone_offset( $tzstring );
+				$offset = CMB2_Utils::timezone_offset( $tzstring );
 
 				if ( 'UTC' === substr( $tzstring, 0, 3 ) ) {
 					$tzstring = timezone_name_from_abbr( '', $offset, 0 );
@@ -959,44 +857,81 @@ class Test_CMB2_Types extends Test_CMB2 {
 		);
 
 		if ( $is_53 ) {
+
+			date_default_timezone_set( 'America/New_York' );
+
 			$expected['group'][0]['text_datetime_timestamp_timezone_utc'] = array( 1448056800, 1448060400 );
+
+			// If DST, remove an hour.
+			if ( date( 'I' ) ) {
+				foreach ( $expected['group'][0]['text_datetime_timestamp_timezone_utc'] as $key => $value ) {
+					$expected['group'][0]['text_datetime_timestamp_timezone_utc'][ $key ] = $value - 3600;
+				}
+			}
+
 			$expected['group'][0]['text_datetime_timestamp_timezone'] = $date_values;
 		}
 
 		$this->assertEquals( $expected, $values );
 	}
 
-	/**
-	 * Test_CMB2_Types helper methods
-	 */
-
-	private function get_field_object( $type = '' ) {
-		$args = $this->text_type_field;
-
-		if ( $type ) {
-			if ( is_string( $type ) ) {
-				$args['type'] = $type;
-			} elseif ( is_array( $type ) ) {
-				$args = wp_parse_args( $type, $args );
-			}
-		}
-
-		return new CMB2_Field( array(
-			'field_args' => $args,
-			'object_id' => $this->post_id,
+	public function test_save_group_with_file_field() {
+		$cmb = new CMB2( array(
+			'id' => 'test-save-file-in-group',
+			'object_types' => array(
+				'post',
+			),
+			'fields' => array(
+				'group_field' => array(
+					'name' => 'Group',
+					'desc' => 'Group description',
+					'id' => 'group_field',
+					'type' => 'group',
+					'fields' => array(
+						'first_field' => array(
+							'name' => 'Field 1',
+							'id' => 'first_field',
+							'type' => 'text',
+						),
+						'test_file' => array(
+							'name' => 'Name',
+							'id' => 'test_file',
+							'type' => 'file',
+						),
+					),
+				),
+			),
 		) );
+
+		$test_values = array(
+			'group_field' => array(
+				array(
+					'first_field'  => '',
+					'test_file'    => '',
+					'test_file_id' => '0',
+				),
+			),
+		);
+		$expected = $test_values;
+		$expected['group_field'] = array();
+
+		$this->assertEquals( $expected, $cmb->get_sanitized_values( $test_values ) );
+
+		$test_values['group_field'][0]['first_field'] = 'one';
+		$test_values['group_field'][0]['test_file'] = 'http://two';
+
+		$expected = $test_values;
+		unset( $expected['group_field'][0]['test_file_id'] );
+
+		$this->assertEquals( $expected, $cmb->get_sanitized_values( $test_values ) );
+
+		$test_values['group_field'][0]['test_file_id'] = '3';
+		$expected['group_field'][0]['test_file_id'] = 3;
+
+		$this->assertEquals( $expected, $cmb->get_sanitized_values( $test_values ) );
 	}
 
-	private function get_field_type_object( $args = '' ) {
-		$field = is_a( $args, 'CMB2_Field' ) ? $args : $this->get_field_object( $args );
-		return new CMB2_Types( $field );
-	}
-
-	/**
-	 * Test Callbacks
-	 */
-
-	public function options_cb( $field ) {
+	public static function options_cb( $field ) {
 		return array(
 			'one'         => 'One',
 			'two'         => 'Two',
@@ -1008,22 +943,13 @@ class Test_CMB2_Types extends Test_CMB2 {
 		);
 	}
 
-	public function add_type_cb( $types ) {
+	public static function add_type_cb( $types ) {
 		$types[] = 'test';
 		return $types;
 	}
 
-	public function change_money_cb( $field_args ) {
+	public static function change_money_cb( $field_args ) {
 		return '£ ' . $field_args['type'];
 	}
 
-}
-
-/**
- * Simply allows access to the dependencies protected property (for testing)
- */
-class Test_CMB2_JS extends CMB2_JS {
-	public static function dependencies() {
-		return parent::$dependencies;
-	}
 }

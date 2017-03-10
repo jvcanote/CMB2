@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # To install temp. test suite
 # bash tests/bin/install-wp-tests.sh wordpress_test root ''
+# bash tests/bin/install-wp-tests.sh wordpress_test root '' localhost 3.8
 
 if [ $# -lt 3 ]; then
 	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version]"
@@ -63,7 +64,7 @@ install_wp() {
 
 install_test_suite() {
 	# portable in-place argument for both GNU sed and Mac OSX sed
-	if [[ $(uname -s) == 'Darwin' ]]; then
+	if [[ $(uname -s) == 'Darwin' && $(which sed) == '/usr/bin/sed' ]]; then
 		local ioption='-i .bak'
 	else
 		local ioption='-i'
@@ -87,6 +88,13 @@ install_test_suite() {
 	sed $ioption "s/yourusernamehere/$DB_USER/" "$WP_TESTS_DIR"/wp-tests-config.php
 	sed $ioption "s/yourpasswordhere/$DB_PASS/" "$WP_TESTS_DIR"/wp-tests-config.php
 	sed $ioption "s|localhost|${DB_HOST}|" "$WP_TESTS_DIR"/wp-tests-config.php
+}
+
+install_required_plugins() {
+	if [ ! -d /tmp/wordpress/wp-content/plugins/rest-api/ ]; then
+		download https://downloads.wordpress.org/plugin/rest-api.zip /tmp/rest-api.zip
+		unzip /tmp/rest-api.zip -d /tmp/wordpress/wp-content/plugins/
+	fi
 }
 
 install_db() {
@@ -115,4 +123,5 @@ install_db() {
 
 install_wp
 install_test_suite
+install_required_plugins
 install_db
